@@ -1,26 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Image } from './Image'
 
-export const Card = ({ card, flipped }) => {
+export const Card = ({ card, onClick, isFlipped, index, deleteCard }) => {
   const { name, image } = card;
 
-  const [flippedCard, setFlippedCard] = useState(false)
-  const classes = flippedCard || flipped ? 'cards-list__card card is-flipped' : 'cards-list__card card'
+  const classes = `cards-list__card card ${isFlipped ? 'is-flipped' : ''}`
+  const deleteCardStyles = deleteCard ? { visibility: 'hidden', transition: '1s' } : null
 
   const handleClick = () => {
-    setFlippedCard(prev => !prev)
+    onClick(index)
   }
 
-  useEffect(() => {
-    if (flippedCard) {
-      setTimeout(() => {
-        setFlippedCard(false)
-      }, 5000);
-    }
-  }, [flippedCard])
-
   return (
-    <div onClick={handleClick} className={classes}>
+    <div onClick={handleClick} className={classes} style={deleteCardStyles}>
       <Image image={image} alt={name} />
       <div className='card__face card__face_front'></div>
     </div>
