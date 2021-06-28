@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { setButtonActive, setFlippedCards, clearFlippedCards, setMatched, timerActive, resetSeconds, setMinutes } from "./store/actions"
 import { Card } from './components/Card'
@@ -13,6 +13,8 @@ function App() {
   const dispatch = useDispatch()
   const store = useSelector((state) => state)
   const { buttonActive, flippedCards, matched, seconds, minutes } = store
+
+  const [flippedOff, setFlippedOff] = useState(true);
 
   const handleClickButton = () => {
     dispatch(timerActive())
@@ -38,7 +40,16 @@ function App() {
       dispatch(setMatched(firstCard.name))
     }
 
-    if (flippedCards.length === 2) setTimeout(() => dispatch(clearFlippedCards()), 5000)
+    if (flippedCards.length === 2) {
+      // setTimeout(() => {
+      //   dispatch(clearFlippedCards()), 5000)
+      // } 
+      setTimeout(() => {
+        dispatch(clearFlippedCards())
+        setFlippedOff(true)
+      }, 5000);
+      setFlippedOff(false)
+    }
 
   }, [flippedCards, cards, dispatch])
 
@@ -59,7 +70,15 @@ function App() {
             deleteCard = true
           }
 
-          return <Card card={card} index={index} key={card.id} onClick={onFlippedCards} isFlipped={isFlipped} deleteCard={deleteCard} />
+          return (
+            <Card
+              card={card}
+              index={index}
+              key={card.id}
+              onClick={flippedOff ? onFlippedCards : () => { }}
+              isFlipped={isFlipped}
+              deleteCard={deleteCard} />
+          )
         })}
       </div>
       <button disabled={buttonActive} onClick={handleClickButton} className="app__button">Start</button>
