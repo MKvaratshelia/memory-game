@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from "react-redux";
+import { setButtonActive, setFlippedCards, clearFlippedCards, setMatched, timerActive, resetSeconds, setMinutes } from "./store/actions"
 import { Card } from './components/Card'
 import { shuffle } from './utils'
 import { animals } from './constants'
@@ -7,32 +9,23 @@ import './App.scss'
 shuffle(animals)
 
 function App() {
-
-  const [seconds, setSeconds] = useState(0)
-  const [minutes, setMinutes] = useState(0)
-  const [activeButton, setActiveButton] = useState(false)
-  const [cards, setCards] = useState(animals)
-  const [flippedCards, setFlippedCards] = useState([])
-  const [matched, setMatched] = useState([])
-
-  const timerActive = () => {
-    let timer = setInterval(() => {
-      setSeconds(prevState => prevState + 1)
-    }, 1000);
-  }
+  const cards = animals
+  const dispatch = useDispatch()
+  const store = useSelector((state) => state)
+  const { buttonActive, flippedCards, matched, seconds, minutes } = store
 
   const handleClickButton = () => {
-    timerActive()
-    setActiveButton(prevState => !prevState)
+    dispatch(timerActive())
+    dispatch(setButtonActive(true))
   }
 
   const onFlippedCards = (id) => {
-    setFlippedCards((prev) => [...prev, id])
+    dispatch(setFlippedCards(id))
   }
 
   if (seconds === 60) {
-    setSeconds(0)
-    setMinutes(prevState => prevState + 1)
+    dispatch(setMinutes())
+    dispatch(resetSeconds())
   }
 
   useEffect(() => {
@@ -41,26 +34,19 @@ function App() {
     const firstCard = cards[flippedCards[0]]
     const secondCard = cards[flippedCards[1]]
 
-    console.log(firstCard.name, secondCard.name)
-
-    if (secondCard && firstCard.name === secondCard.name) {
-      setMatched([...matched, firstCard.name])
+    if (secondCard.name && firstCard.name === secondCard.name) {
+      dispatch(setMatched(firstCard.name))
     }
 
-    if (flippedCards.length === 2) setTimeout(() => setFlippedCards([]), 5000);
+    if (flippedCards.length === 2) setTimeout(() => dispatch(clearFlippedCards()), 5000)
 
-  }, [flippedCards])
+  }, [flippedCards, cards, dispatch])
 
   return (
     <div className='app'>
       <header className='app__header header'>
-        {activeButton
-          &&
-          <>
-            <h2 className='header__title'>Timer:</h2>
-            <span className="header__timer">{`${minutes}m ${seconds}s`}</span>
-          </>
-        }
+        <h2 className='header__title'>Timer:</h2>
+        <span className="header__timer">{`${minutes}m ${seconds}s`}</span>
       </header>
       <div className='app__card-list cards-list'>
         {cards.map((card, index) => {
@@ -76,7 +62,7 @@ function App() {
           return <Card card={card} index={index} key={card.id} onClick={onFlippedCards} isFlipped={isFlipped} deleteCard={deleteCard} />
         })}
       </div>
-      <button disabled={activeButton} onClick={handleClickButton} className="app__button">Start</button>
+      <button disabled={buttonActive} onClick={handleClickButton} className="app__button">Start</button>
     </div>
   )
 }

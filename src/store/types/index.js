@@ -1,0 +1,9 @@
+export const ACTIVE_BUTTON = 'ACTIVE_BUTTON'
+export const FLIPPED_CARDS = 'FLIPPED_CARDS'
+export const CLEAR_FLIPPED_CARDS = 'CLEAR__FLIPPED_CARDS'
+export const MATCHED = 'MATCHED'
+export const TIMER_ACTIVE = 'TIMER_ACTIVE'
+export const SECONDS = 'SECONDS'
+export const RESET_SECONDS = 'RESET_SECONDS'
+export const MINUTES = 'MINUTES'
+

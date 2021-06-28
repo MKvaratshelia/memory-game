@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Image } from './Image'
 
 export const Card = ({ card, onClick, isFlipped, index, deleteCard }) => {
