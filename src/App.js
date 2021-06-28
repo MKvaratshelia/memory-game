@@ -41,9 +41,6 @@ function App() {
     }
 
     if (flippedCards.length === 2) {
-      // setTimeout(() => {
-      //   dispatch(clearFlippedCards()), 5000)
-      // } 
       setTimeout(() => {
         dispatch(clearFlippedCards())
         setFlippedOff(true)
