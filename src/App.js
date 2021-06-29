@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { setButtonActive, setFlippedCards, clearFlippedCards, setMatched, timerActive, resetSeconds, setMinutes } from "./store/actions"
+import { setButtonActive, setFlippedCards, clearFlippedCards, setMatched, setFlippedOff } from "./store/actions"
 import { Card } from './components/Card'
 import { shuffle } from './utils'
 import { animals } from './constants'
@@ -12,23 +12,31 @@ function App() {
   const cards = animals
   const dispatch = useDispatch()
   const store = useSelector((state) => state)
-  const { buttonActive, flippedCards, matched, seconds, minutes } = store
+  const { buttonActive, flippedCards, matched, flippedOff } = store
 
-  const [flippedOff, setFlippedOff] = useState(true);
+  const [seconds, setSeconds] = useState(0)
+  const [minutes, setMinutes] = useState(0)
+
+  const timer = () => setSeconds(prev => prev + 1)
+
+  const startTimer = () => window.timerId = setInterval(timer, 1000)
+
+  const stopTimer = () => clearInterval(window.timerId)
 
   const handleClickButton = () => {
-    dispatch(timerActive())
+    startTimer()
     dispatch(setButtonActive(true))
   }
 
-  const onFlippedCards = (id) => {
-    dispatch(setFlippedCards(id))
-  }
+  const onFlippedCards = (id) => dispatch(setFlippedCards(id))
 
   if (seconds === 60) {
-    dispatch(setMinutes())
-    dispatch(resetSeconds())
+    setMinutes(prev => prev + 1)
+    setSeconds(0)
   }
+
+  if (matched.length === 18) stopTimer()
+
 
   useEffect(() => {
     if (flippedCards.length < 2) return
@@ -43,9 +51,9 @@ function App() {
     if (flippedCards.length === 2) {
       setTimeout(() => {
         dispatch(clearFlippedCards())
-        setFlippedOff(true)
+        dispatch(setFlippedOff(true))
       }, 5000);
-      setFlippedOff(false)
+      dispatch(setFlippedOff(false))
     }
 
   }, [flippedCards, cards, dispatch])
@@ -61,7 +69,7 @@ function App() {
           let isFlipped = false
           let deleteCard = false
 
-          if (flippedCards.includes(index)) isFlipped = true
+          if (flippedCards.includes(index)) { isFlipped = true }
           if (matched.includes(card.name)) {
             isFlipped = true
             deleteCard = true

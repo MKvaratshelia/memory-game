@@ -1,5 +1,5 @@
 
-import { ACTIVE_BUTTON, FLIPPED_CARDS, MATCHED, CLEAR_FLIPPED_CARDS, SECONDS, MINUTES, RESET_SECONDS } from "../types"
+import { ACTIVE_BUTTON, FLIPPED_CARDS, MATCHED, CLEAR_FLIPPED_CARDS, FLIPPED_OFF } from "../types"
 
 const initialState = {
   buttonActive: false,
@@ -7,6 +7,7 @@ const initialState = {
   matched: [],
   seconds: 0,
   minutes: 0,
+  flippedOff: true
 };
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -16,15 +17,11 @@ export const reducer = (state = initialState, action) => {
       return { ...state, flippedCards: [...state.flippedCards, action.payload] }
     case CLEAR_FLIPPED_CARDS:
       return { ...state, flippedCards: [] }
-    default:
-      return state;
     case MATCHED:
       return { ...state, matched: [...state.matched, action.payload] }
-    case SECONDS:
-      return { ...state, seconds: state.seconds + 1 }
-    case RESET_SECONDS:
-      return { ...state, seconds: 0 }
-    case MINUTES:
-      return { ...state, minutes: state.minutes + 1 }
+    case FLIPPED_OFF:
+      return { ...state, flippedOff: action.payload }
+    default:
+      return state;
   }
 };

@@ -1,4 +1,4 @@
-import { ACTIVE_BUTTON, FLIPPED_CARDS, CLEAR_FLIPPED_CARDS, MATCHED, SECONDS, MINUTES, RESET_SECONDS } from '../types'
+import { ACTIVE_BUTTON, FLIPPED_CARDS, CLEAR_FLIPPED_CARDS, MATCHED, FLIPPED_OFF } from '../types'
 
 export const setButtonActive = (state) => {
   return {
@@ -27,31 +27,9 @@ export const setMatched = (card) => {
   }
 }
 
-export const setSeconds = () => {
+export const setFlippedOff = (state) => {
   return {
-    type: SECONDS
+    type: FLIPPED_OFF,
+    payload: state
   }
-}
-
-export const timerActive = () => {
-  return async (dispatch) => {
-    try {
-      let timer = setInterval(() => {
-        dispatch(setSeconds())
-      }, 1000)
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-}
-
-export const resetSeconds = () => {
-  return {
-    type: RESET_SECONDS
-  }
-}
-
-export const setMinutes = () => {
-  return { type: MINUTES }
 }
